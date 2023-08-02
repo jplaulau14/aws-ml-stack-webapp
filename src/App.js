@@ -33,7 +33,7 @@ function App() {
           file_content: file ? await toBase64(file) : url
         })
       });
-
+      
       const data = await res.json();
       setResponse(data);
     } catch (err) {
