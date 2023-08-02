@@ -1,64 +1,110 @@
 /* src/App.css */
-body {
-  background-color: #f4f6f8;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif; /* You can choose any font-family you prefer */
 }
 
 .App {
-  font-family: Arial, Helvetica, sans-serif;
-  text-align: center;
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 1rem; /* Some padding for breathing room */
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
 }
 
 .input-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 10px;
+  gap: 1rem; /* Spacing between child elements */
+  margin-bottom: 1.5rem;
+}
+
+input[type="text"] {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input[type="file"] {
+  font-size: 1rem;
 }
 
 button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
   cursor: pointer;
-  background-color: #007BFF;
-  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #007BFF; /* You can choose any color you prefer */
+  color: white;
   border: none;
   border-radius: 5px;
-  transition: background-color 0.3s;
-}
+  transition: background-color 0.3s ease;
 
-button:hover {
-  background-color: #0056b3;
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    background-color: #0056b3; /* Slightly darker shade for hover */
+  }
 }
 
 .output-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* default to mobile view: image on top, text below */
   align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
+  gap: 1rem; /* Spacing between child elements */
+  margin-top: 2rem;
+  width: 100%;
 }
 
 .output-container img {
-  max-width: 300px;
-  border: 1px solid #ddd;
+  max-width: 90%;
+  height: auto;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-.output-container div {
-  border: 1px solid #ddd;
-  padding: 10px;
-  max-width: 300px;
+.output-container > div {
+  border: 1px solid #ccc;
   border-radius: 5px;
+  padding: 1rem;
+  max-width: 90%;
+  text-align: center; /* Center the text inside the bordered area */
+}
+
+p {
+  font-size: 1.2rem; /* Increasing the font size as per your request */
+  color: #333;
+}
+
+/* Desktop view */
+@media screen and (min-width: 768px) {
+  .output-container {
+    flex-direction: row; /* image and text side by side */
+    justify-content: center;
+  }
+  
+  .output-container img, .output-container > div {
+    max-width: 45%; /* allocating space for both elements side by side */
+  }
 }
 
 /* Loading animation */
@@ -72,18 +118,12 @@ button:hover {
 }
 
 .loading-circle {
-  border: 12px solid #f4f6f8;
-  border-top: 12px solid #007BFF;
+  border: 120px solid #f4f6f8;
+  border-top: 120px solid #007BFF;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 500px;
+  height: 500px;
   animation: spin 1s linear infinite;
-}
-
-/* Mobile responsive styles */
-@media (max-width: 600px) {
-  .input-container {
-    flex-direction: column;
-    gap: 10px;
-  }
+  margin: 20px auto; /* Horizontal centering */
+  display: block; /* Display as block for margin to work */
 }
