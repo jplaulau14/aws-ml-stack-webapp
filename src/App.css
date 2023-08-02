@@ -117,13 +117,28 @@ p {
   }
 }
 
+/* Mobile View (default) */
 .loading-circle {
-  border: 120px solid #f4f6f8;
-  border-top: 120px solid #007BFF;
+  border: 16px solid #f4f6f8; /* Default to a smaller size for mobile */
+  border-top: 16px solid #007BFF;
   border-radius: 50%;
-  width: 500px;
-  height: 500px;
+  width: 80px;
+  height: 80px;
   animation: spin 1s linear infinite;
   margin: 20px auto; /* Horizontal centering */
   display: block; /* Display as block for margin to work */
+}
+
+/* Desktop view */
+@media screen and (min-width: 768px) {
+  .loading-circle {
+    border: 120px solid #f4f6f8; /* Retain the large size for desktops */
+    border-top: 120px solid #007BFF;
+    border-radius: 50%;
+    width: 500px;
+    height: 500px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto; /* Horizontal centering */
+    display: block; /* Display as block for margin to work */
+  }
 }
