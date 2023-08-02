@@ -1,13 +1,33 @@
 // src/App.js
-import React, { useState } from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState(null);
+  const [urlResponse, setUrlResponse] = useState(null); // Response for URL
+  const [fileResponse, setFileResponse] = useState(null); // Response for File
   const [error, setError] = useState(null);
+
+  const processImage = async (sourceType, content) => {
+    try {
+      const res = await fetch(
+        "https://3c1iaap5i7.execute-api.us-east-1.amazonaws.com/dev/textract-function/textract_handler",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            source_type: sourceType,
+            file_content: content,
+          }),
+        }
+      );
+
+      return await res.json();
+    } catch (err) {
+      setError("Failed to process the request.");
+    }
+  };
 
   const handleSubmit = async () => {
     if (!url && !file) {
@@ -17,38 +37,29 @@ function App() {
 
     setLoading(true);
     setError(null);
-    setResponse(null);
+    setUrlResponse(null);
+    setFileResponse(null);
 
-    // TODO: Implement API call to your AWS Lambda function
+    if (url) {
+      const urlData = await processImage("url", url);
+      setUrlResponse(urlData);
+    }
 
-    // For demo purposes, assume API endpoint is 'https://yourapi.endpoint'
-    let formData = new FormData();
-    if (file) formData.append('file', file);
-    
-    try {
-      const res = await fetch('https://3c1iaap5i7.execute-api.us-east-1.amazonaws.com/dev/textract-function/textract_handler', {
-        method: 'POST',
-        body: JSON.stringify({
-          source_type: file ? 'upload' : 'url',
-          file_content: file ? await toBase64(file) : url
-        })
-      });
-
-      const data = await res.json();
-      setResponse(data);
-    } catch (err) {
-      setError("Failed to process the request.");
+    if (file) {
+      const fileData = await processImage("upload", await toBase64(file));
+      setFileResponse(fileData);
     }
 
     setLoading(false);
   };
 
-  const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result.split(',')[1]); // exclude the base64 MIME-type declaration part
-    reader.onerror = error => reject(error);
-  });
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // exclude the base64 MIME-type declaration part
+      reader.onerror = (error) => reject(error);
+    });
 
   return (
     <div className="App">
@@ -59,12 +70,9 @@ function App() {
           type="text"
           placeholder="Enter Image URL"
           value={url}
-          onChange={e => setUrl(e.target.value)}
+          onChange={(e) => setUrl(e.target.value)}
         />
-        <input
-          type="file"
-          onChange={e => setFile(e.target.files[0])}
-        />
+        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
       </div>
 
       <button onClick={handleSubmit} disabled={loading}>
@@ -72,13 +80,27 @@ function App() {
       </button>
 
       {loading && <div className="loading-circle"></div>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {response && (
+      {urlResponse && (
         <div className="output-container">
-          <img src={url || URL.createObjectURL(file)} alt="Processed content" />
+          <img src={url} alt="Processed content from URL" />
           <div>
-            {response.map((line, index) => (
+            {urlResponse.map((line, index) => (
+              <p key={index}>{line}</p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {fileResponse && (
+        <div className="output-container">
+          <img
+            src={URL.createObjectURL(file)}
+            alt="Processed content from File"
+          />
+          <div>
+            {fileResponse.map((line, index) => (
               <p key={index}>{line}</p>
             ))}
           </div>
