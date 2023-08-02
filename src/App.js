@@ -33,7 +33,7 @@ function App() {
           file_content: file ? await toBase64(file) : url
         })
       });
-      
+
       const data = await res.json();
       setResponse(data);
     } catch (err) {
@@ -71,7 +71,7 @@ function App() {
         {loading ? "Processing..." : "Textract!"}
       </button>
 
-      {loading && <p>Loading...</p>}
+      {loading && <div className="loading-circle"></div>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {response && (
