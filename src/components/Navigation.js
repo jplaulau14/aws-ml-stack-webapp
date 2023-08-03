@@ -8,7 +8,7 @@ function Navigation() {
       <div className="nav-links">
         <Link to="/" className="nav-link">Textract</Link>
         <Link to="/ComprehendDemo" className="nav-link">Comprehend</Link>
-        <Link to="/service3" className="nav-link">Service 3</Link>
+        <Link to="/TextractComprehendDemo" className="nav-link">Textract+Comprehend</Link>
       </div>
     </nav>
   );
