@@ -1,0 +1,45 @@
+.navbar {
+    padding: 1rem;
+    background-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem; /* This will now work since .nav-links is a flex container */
+}
+
+.nav-link {
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 0;
+    font-weight: 500;
+    font-size: 1rem;
+    position: relative; /* For positioning the hover effect */
+    transition: font-size 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-link:hover {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #FD9A00;
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+.nav-link.active {
+    opacity: 0.7;
+    color: #FD9A00;
+}
