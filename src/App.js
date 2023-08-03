@@ -63,7 +63,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Textract PWA</h1>
+      <h1>Single-page Text Extraction</h1>
 
       <div className="input-container">
         <input
