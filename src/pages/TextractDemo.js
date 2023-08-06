@@ -15,7 +15,7 @@ function TextractDemo() {
   const processImage = async (sourceType, content) => {
     try {
       const res = await fetch(
-        "https://smsrtzif9l.execute-api.us-east-1.amazonaws.com/dev/textract-function/lambda_handler",
+        "https://o16ldts418.execute-api.ap-southeast-1.amazonaws.com/dev/aws-ml-stack-serverless/lambda_handler",
         {
           method: "POST",
           body: JSON.stringify({
