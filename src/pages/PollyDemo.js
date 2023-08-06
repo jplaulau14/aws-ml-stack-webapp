@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 function PollyDemo() {
   const [text, setText] = useState("");
@@ -46,14 +46,17 @@ function PollyDemo() {
   const handlePlay = () => {
     const audio = new Audio(`data:audio/mp3;base64,${audioData}`);
     audio.play();
-    if (videoRef1.current && videoRef2.current) {
-        videoRef1.current.play();
-        videoRef2.current.play();
-        setShowVideos(true); 
-      } else {
-        console.error("Video refs are not yet set.");
-      }
+    setShowVideos(true);
   };
+
+  useEffect(() => {
+    if (showVideos && videoRef1.current && videoRef2.current) {
+      videoRef1.current.play();
+      videoRef2.current.play();
+    } else if (showVideos) {
+      console.error("Video refs are not yet set.");
+    }
+  }, [showVideos]);
 
   return (
     <div className="App">
@@ -77,13 +80,19 @@ function PollyDemo() {
       {audioData && <button onClick={handlePlay}>Play</button>}
       {showVideos && (
         <div className="video-container" style={{ marginTop: "20px" }}>
-          <video ref={videoRef1} width="480" height="360" autoPlay loop>
-            <source src="/videos/minecraft.mp4" type="video/mp4" />
+          <video ref={videoRef1} width="480" height="360" autoPlay loop preload="auto">
+            <source
+              src="https://raw.githubusercontent.com/jplaulau14/aws-ml-stack-webapp/main/public/videos/minecraft.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
 
-          <video ref={videoRef2} width="480" height="360" autoPlay loop>
-            <source src="/videos/subway_surfer.mp4" type="video/mp4" />
+          <video ref={videoRef2} width="480" height="360" autoPlay loop preload="auto">
+            <source
+              src="https://raw.githubusercontent.com/jplaulau14/aws-ml-stack-webapp/main/public/videos/subway_surfer.mp4"
+              type="video/mp4"
+            />
             Your browser does not support the video tag.
           </video>
         </div>
