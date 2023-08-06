@@ -18,7 +18,6 @@ function PollyDemo() {
     setLoading(true);
     setError(null);
     setShowVideos(false);
-    setAudioData(null);
     if (videoRef1.current) videoRef1.current.currentTime = 0;
     if (videoRef2.current) videoRef2.current.currentTime = 0;
 
