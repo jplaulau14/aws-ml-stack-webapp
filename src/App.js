@@ -4,6 +4,7 @@ import Navigation from "./components/Navigation";
 import TextractDemo from "./pages/TextractDemo";
 import ComprehendDemo from "./pages/ComprehendDemo";
 import TextractComprehendDemo from "./pages/TextractComprehendDemo";
+import PollyDemo from "./pages/PollyDemo";
 import "./App.css";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<TextractDemo />} exact />
           <Route path="/ComprehendDemo" element={<ComprehendDemo />} />
           <Route path="/TextractComprehendDemo" element={<TextractComprehendDemo />} />
+          <Route path="/PollyDemo" element={<PollyDemo />} />
         </Routes>
       </div>
     </Router>

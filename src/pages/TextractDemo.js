@@ -6,9 +6,11 @@ function TextractDemo() {
   const [url, setUrl] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [urlResponse, setUrlResponse] = useState(null); // Response for URL
-  const [fileResponse, setFileResponse] = useState(null); // Response for File
+  const [urlResponse, setUrlResponse] = useState(null);
+  const [fileResponse, setFileResponse] = useState(null);
   const [error, setError] = useState(null);
+  const [processingUrl, setProcessingUrl] = useState("");
+  const [processingFile, setProcessingFile] = useState(null);
 
   const processImage = async (sourceType, content) => {
     try {
@@ -35,6 +37,8 @@ function TextractDemo() {
       setError("Please provide at least one input: URL or File.");
       return;
     }
+    setProcessingUrl(url);
+    setProcessingFile(file);
 
     setLoading(true);
     setError(null);
@@ -85,7 +89,7 @@ function TextractDemo() {
 
       {urlResponse && (
         <div className="output-container">
-          <img src={url} alt="Processed content from URL" />
+          <img src={processingUrl} alt="Processed content from URL" />
           <div>
             {urlResponse.map((line, index) => (
               <p key={index}>{line}</p>
@@ -97,7 +101,7 @@ function TextractDemo() {
       {fileResponse && (
         <div className="output-container">
           <img
-            src={URL.createObjectURL(file)}
+            src={URL.createObjectURL(processingFile)}
             alt="Processed content from File"
           />
           <div>

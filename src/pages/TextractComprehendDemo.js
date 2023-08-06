@@ -7,6 +7,8 @@ function TextractComprehendDemo() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [processingUrl, setProcessingUrl] = useState("");
+  const [processingFile, setProcessingFile] = useState(null);
 
   const processImageAndAnalyze = async (sourceType, content) => {
     try {
@@ -39,6 +41,8 @@ function TextractComprehendDemo() {
       setError("Please provide at least one input: URL or File.");
       return;
     }
+    setProcessingUrl(url);
+    setProcessingFile(file);
 
     setLoading(true);
     setError(null);
@@ -90,44 +94,59 @@ function TextractComprehendDemo() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {analysisResult && (
-        <div className="output-container">
-          {url && <img src={url} alt="Processed content from URL" />}
-          {file && (
-            <img
-              src={URL.createObjectURL(file)}
-              alt="Processed content from File"
-            />
+        <>
+          {processingUrl && (
+            <div className="output-container">
+              <img src={processingUrl} alt="Processed content from URL" />
+              {/* Shared analysis output */}
+              {renderAnalysisOutput(analysisResult)}
+            </div>
           )}
-          <div>
-            <h2 className="textract-heading">Textract Result:</h2>
-            <p>{analysisResult.ExtractedText.join(' ')}</p>
 
-            <h2 className="comprehend-heading">Comprehend Analysis:</h2>
-            <p>
-              <strong>Sentiment:</strong>{" "}
-              {analysisResult.SentimentAnalysis.Sentiment}
-            </p>
-            {analysisResult.SentimentAnalysis.SentimentScore && (
-              <div>
-                <p>
-                  <strong>Positive Score:</strong>{" "}
-                  {analysisResult.SentimentAnalysis.SentimentScore.Positive}
-                </p>
-                <p>
-                  <strong>Negative Score:</strong>{" "}
-                  {analysisResult.SentimentAnalysis.SentimentScore.Negative}
-                </p>
-                <p>
-                  <strong>Neutral Score:</strong>{" "}
-                  {analysisResult.SentimentAnalysis.SentimentScore.Neutral}
-                </p>
-                <p>
-                  <strong>Mixed Score:</strong>{" "}
-                  {analysisResult.SentimentAnalysis.SentimentScore.Mixed}
-                </p>
-              </div>
-            )}
-          </div>
+          {processingFile && (
+            <div className="output-container">
+              <img
+                src={URL.createObjectURL(processingFile)}
+                alt="Processed content from File"
+              />
+              {/* Shared analysis output */}
+              {renderAnalysisOutput(analysisResult)}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+function renderAnalysisOutput(analysisResult) {
+  return (
+    <div>
+      <h2 className="textract-heading">Textract Result:</h2>
+      <p>{analysisResult.ExtractedText.join(" ")}</p>
+
+      <h2 className="comprehend-heading">Comprehend Analysis:</h2>
+      <p>
+        <strong>Sentiment:</strong> {analysisResult.SentimentAnalysis.Sentiment}
+      </p>
+      {analysisResult.SentimentAnalysis.SentimentScore && (
+        <div>
+          <p>
+            <strong>Positive Score:</strong>{" "}
+            {analysisResult.SentimentAnalysis.SentimentScore.Positive}
+          </p>
+          <p>
+            <strong>Negative Score:</strong>{" "}
+            {analysisResult.SentimentAnalysis.SentimentScore.Negative}
+          </p>
+          <p>
+            <strong>Neutral Score:</strong>{" "}
+            {analysisResult.SentimentAnalysis.SentimentScore.Neutral}
+          </p>
+          <p>
+            <strong>Mixed Score:</strong>{" "}
+            {analysisResult.SentimentAnalysis.SentimentScore.Mixed}
+          </p>
         </div>
       )}
     </div>
