@@ -5,6 +5,7 @@ function PollyDemo() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [audioData, setAudioData] = useState(null);
+  const [showVideos, setShowVideos] = useState(false);
   const videoRef1 = useRef(null);
   const videoRef2 = useRef(null);
 
@@ -45,8 +46,13 @@ function PollyDemo() {
   const handlePlay = () => {
     const audio = new Audio(`data:audio/mp3;base64,${audioData}`);
     audio.play();
-    videoRef1.current.play();
-    videoRef2.current.play();
+    if (videoRef1.current && videoRef2.current) {
+        videoRef1.current.play();
+        videoRef2.current.play();
+        setShowVideos(true); 
+      } else {
+        console.error("Video refs are not yet set.");
+      }
   };
 
   return (
@@ -69,17 +75,19 @@ function PollyDemo() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {audioData && <button onClick={handlePlay}>Play</button>}
-      <div className="video-container">
-        <video ref={videoRef1} width="320" height="240" controls>
-          <source src="https://drive.google.com/file/d/1QT3xqxmEE3wu1AKGUGrhi74n9PTV55Oc/view?usp=drive_link" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+      {showVideos && (
+        <div className="video-container" style={{ marginTop: "20px" }}>
+          <video ref={videoRef1} width="480" height="360" autoPlay loop>
+            <source src="/videos/minecraft.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
 
-        <video ref={videoRef2} width="320" height="240" controls>
-          <source src="https://drive.google.com/file/d/1ek7cW46yBd-Yu39dKgvYnQZVA5POrXWJ/view?usp=drive_link" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
+          <video ref={videoRef2} width="480" height="360" autoPlay loop>
+            <source src="/videos/subway_surfer.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      )}
     </div>
   );
 }
