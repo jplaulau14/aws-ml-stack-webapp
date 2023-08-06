@@ -17,6 +17,10 @@ function PollyDemo() {
 
     setLoading(true);
     setError(null);
+    setShowVideos(false);
+    setAudioData(null);
+    if (videoRef1.current) videoRef1.current.currentTime = 0;
+    if (videoRef2.current) videoRef2.current.currentTime = 0;
 
     try {
       const response = await fetch(
@@ -80,7 +84,14 @@ function PollyDemo() {
       {audioData && <button onClick={handlePlay}>Play</button>}
       {showVideos && (
         <div className="video-container" style={{ marginTop: "20px" }}>
-          <video ref={videoRef1} width="480" height="360" autoPlay loop preload="auto">
+          <video
+            ref={videoRef1}
+            width="480"
+            height="360"
+            autoPlay
+            loop
+            preload="auto"
+          >
             <source
               src="https://raw.githubusercontent.com/jplaulau14/aws-ml-stack-webapp/main/public/videos/minecraft.mp4"
               type="video/mp4"
@@ -88,7 +99,14 @@ function PollyDemo() {
             Your browser does not support the video tag.
           </video>
 
-          <video ref={videoRef2} width="480" height="360" autoPlay loop preload="auto">
+          <video
+            ref={videoRef2}
+            width="480"
+            height="360"
+            autoPlay
+            loop
+            preload="auto"
+          >
             <source
               src="https://raw.githubusercontent.com/jplaulau14/aws-ml-stack-webapp/main/public/videos/subway_surfer.mp4"
               type="video/mp4"
