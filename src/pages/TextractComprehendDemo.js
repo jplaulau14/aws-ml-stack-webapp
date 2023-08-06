@@ -13,7 +13,7 @@ function TextractComprehendDemo() {
   const processImageAndAnalyze = async (sourceType, content) => {
     try {
       const textractRes = await fetch(
-        "https://3c1iaap5i7.execute-api.us-east-1.amazonaws.com/dev/textract-function/lambda_handler",
+        "https://smsrtzif9l.execute-api.us-east-1.amazonaws.com/dev/textract-function/lambda_handler",
         {
           method: "POST",
           body: JSON.stringify({
