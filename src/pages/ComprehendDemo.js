@@ -1,4 +1,3 @@
-// src/Service2Demo.js
 import React, { useState } from "react";
 import "./ComprehendDemo.css";
 

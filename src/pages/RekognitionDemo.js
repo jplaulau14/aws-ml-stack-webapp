@@ -11,6 +11,7 @@ function RekognitionDemo() {
   const [cameraStream, setCameraStream] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
+  const [faceDetails, setFaceDetails] = useState(null);
 
   const startCamera = async () => {
     try {
@@ -26,27 +27,19 @@ function RekognitionDemo() {
   const captureSnapshot = () => {
     if (!cameraStream) return;
 
-    // Create a canvas element to render the snapshot
     const canvas = document.createElement("canvas");
-    const videoEl = document.querySelector("video"); // the video element used to display camera feed
+    const videoEl = document.querySelector("video");
+
+    if (!videoEl) return;
 
     canvas.width = videoEl.videoWidth;
     canvas.height = videoEl.videoHeight;
     canvas.getContext("2d").drawImage(videoEl, 0, 0);
 
-    // Convert canvas to image data
     const dataURL = canvas.toDataURL("image/jpeg");
-    const binary = atob(dataURL.split(",")[1]);
-    let array = [];
-    for (let i = 0; i < binary.length; i++) {
-      array.push(binary.charCodeAt(i));
-    }
-    const blob = new Blob([new Uint8Array(array)], { type: "image/jpeg" });
-
     setCapturedImage(dataURL);
-    setImageData(btoa(blob));
-
-    // Removed the closeCamera() line here
+    const base64Data = dataURL.split(",")[1];
+    setImageData(base64Data);
   };
 
   const rekognizeImage = async (service, image) => {
@@ -56,6 +49,7 @@ function RekognitionDemo() {
         {
           method: "POST",
           body: JSON.stringify({
+            action: "rekognition",
             rekognition_type: service,
             image_data: image,
           }),
@@ -79,6 +73,8 @@ function RekognitionDemo() {
       cameraStream.getTracks().forEach((track) => track.stop());
       setCameraStream(null);
       setShowCamera(false);
+      setCapturedImage(null);
+      setImageData(null);
     }
   };
 
@@ -93,9 +89,21 @@ function RekognitionDemo() {
     setSuccess(false);
 
     try {
-      const result = await rekognizeImage(rekognitionType, imageData); // Using rekognitionType here
+      const result = await rekognizeImage(rekognitionType, imageData);
       if (result) {
-        setSuccess(true);
+        // Process the result
+        console.log(result);
+        const gender = result.Gender.Value;
+        const emotions = result.Emotions;
+        const highestEmotion = emotions.sort(
+          (a, b) => b.Confidence - a.Confidence
+        )[0].Type;
+        const ageRange = `${result.AgeRange.Low}-${result.AgeRange.High}`;
+        setFaceDetails({
+          gender,
+          emotion: highestEmotion,
+          ageRange,
+        });
       }
     } catch (err) {
       setError("Failed to process the request.");
@@ -109,10 +117,11 @@ function RekognitionDemo() {
     const reader = new FileReader();
 
     reader.onloadend = () => {
-      setImageData(btoa(reader.result));
+      const base64Data = reader.result.split(",")[1];
+      setImageData(base64Data);
     };
 
-    reader.readAsBinaryString(file);
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -169,9 +178,17 @@ function RekognitionDemo() {
       {loading && <div className="loading-circle"></div>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {success && (
-        <div className="output-container">
-          <h1>Success</h1>
+      {faceDetails && (
+        <div className="face-details">
+          <p>
+            <strong>Gender:</strong> {faceDetails.gender}
+          </p>
+          <p>
+            <strong>Emotion:</strong> {faceDetails.emotion}
+          </p>
+          <p>
+            <strong>Age Range:</strong> {faceDetails.ageRange}
+          </p>
         </div>
       )}
     </div>

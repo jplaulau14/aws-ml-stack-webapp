@@ -1,9 +1,32 @@
 /* RekognitionDemo.css */
-.dropdown-container {
-    margin-bottom: 20px;
+.dropdown-container select {
+  font-size: 20px;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+.camera-container > div {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.camera-container {
+  margin-bottom: 20px;
 }
 
 .camera-container button {
-    margin-top: 10px;
-    margin-right: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.face-details {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+.face-details p {
+  margin: 5px 0;
+  font-size: 16px;
 }
