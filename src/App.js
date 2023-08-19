@@ -5,6 +5,7 @@ import TextractDemo from "./pages/TextractDemo";
 import ComprehendDemo from "./pages/ComprehendDemo";
 import TextractComprehendDemo from "./pages/TextractComprehendDemo";
 import PollyDemo from "./pages/PollyDemo";
+import RekognitionDemo from "./pages/RekognitionDemo";
 import "./App.css";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/ComprehendDemo" element={<ComprehendDemo />} />
           <Route path="/TextractComprehendDemo" element={<TextractComprehendDemo />} />
           <Route path="/PollyDemo" element={<PollyDemo />} />
+          <Route path="/RekognitionDemo" element={<RekognitionDemo />} />
         </Routes>
       </div>
     </Router>

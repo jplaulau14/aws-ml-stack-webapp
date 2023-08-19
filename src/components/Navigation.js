@@ -10,6 +10,7 @@ function Navigation() {
         <Link to="/ComprehendDemo" className="nav-link">Comprehend</Link>
         <Link to="/TextractComprehendDemo" className="nav-link">Textract+Comprehend</Link>
         <Link to="/PollyDemo" className="nav-link">Polly</Link>
+        <Link to="/RekognitionDemo" className="nav-link">Rekognition</Link>
       </div>
     </nav>
   );
