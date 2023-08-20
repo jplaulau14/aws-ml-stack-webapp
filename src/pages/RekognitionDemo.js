@@ -90,22 +90,23 @@ function RekognitionDemo() {
 
     try {
       const result = await rekognizeImage(rekognitionType, imageData);
-      if (result) {
-        // Process the result
-        console.log(result);
-        const gender = result.Gender.Value;
-        const emotions = result.Emotions;
-        const highestEmotion = emotions.sort(
-          (a, b) => b.Confidence - a.Confidence
-        )[0].Type;
-        const ageRange = `${result.AgeRange.Low}-${result.AgeRange.High}`;
+      console.log(result);
+      if (result && result.faces && result.faces.length > 0) {
+        const face = result.faces[0];
+
+        const gender = face.Gender ? face.Gender.Value : null;
+        const ageRange = face.AgeRange
+          ? `${face.AgeRange.Low}-${face.AgeRange.High}`
+          : null;
+        const dominantEmotion = face.Emotions[0].Type
         setFaceDetails({
           gender,
-          emotion: highestEmotion,
           ageRange,
+          dominantEmotion,
         });
       }
     } catch (err) {
+      console.log(err);
       setError("Failed to process the request.");
     } finally {
       setLoading(false);
@@ -184,7 +185,7 @@ function RekognitionDemo() {
             <strong>Gender:</strong> {faceDetails.gender}
           </p>
           <p>
-            <strong>Emotion:</strong> {faceDetails.emotion}
+            <strong>Emotion:</strong> {faceDetails.dominantEmotion}
           </p>
           <p>
             <strong>Age Range:</strong> {faceDetails.ageRange}
