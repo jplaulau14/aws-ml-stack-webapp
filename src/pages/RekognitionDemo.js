@@ -1,4 +1,3 @@
-// src/RekognitionDemo.js
 import React, { useState } from "react";
 import "./RekognitionDemo.css";
 
@@ -6,12 +5,10 @@ function RekognitionDemo() {
   const [rekognitionType, setRekognitionType] = useState("label");
   const [imageData, setImageData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [cameraStream, setCameraStream] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [faceDetails, setFaceDetails] = useState(null);
 
   const startCamera = async () => {
     try {
@@ -24,12 +21,15 @@ function RekognitionDemo() {
     }
   };
 
+  const retakeSnapshot = () => {
+    setCapturedImage(null);
+  };
+
   const captureSnapshot = () => {
     if (!cameraStream) return;
 
     const canvas = document.createElement("canvas");
     const videoEl = document.querySelector("video");
-
     if (!videoEl) return;
 
     canvas.width = videoEl.videoWidth;
@@ -86,24 +86,79 @@ function RekognitionDemo() {
 
     setLoading(true);
     setError(null);
-    setSuccess(false);
 
     try {
       const result = await rekognizeImage(rekognitionType, imageData);
       console.log(result);
-      if (result && result.faces && result.faces.length > 0) {
-        const face = result.faces[0];
 
-        const gender = face.Gender ? face.Gender.Value : null;
-        const ageRange = face.AgeRange
-          ? `${face.AgeRange.Low}-${face.AgeRange.High}`
-          : null;
-        const dominantEmotion = face.Emotions[0].Type
-        setFaceDetails({
-          gender,
-          ageRange,
-          dominantEmotion,
+      const boxesToDraw = [];
+
+      if (rekognitionType === "detect_faces" && result && result.faces) {
+        result.faces.forEach((face) => {
+          const boundingBox = face.BoundingBox;
+          const gender = face.Gender ? face.Gender.Value : null;
+          const ageRange = face.AgeRange
+            ? `${face.AgeRange.Low}-${face.AgeRange.High}`
+            : null;
+          const dominantEmotion = face.Emotions[0].Type;
+          const details = {
+            gender: gender,
+            ageRange: ageRange,
+            dominantEmotion: dominantEmotion,
+          };
+
+          boxesToDraw.push({ boundingBox, details });
         });
+      } else if (rekognitionType === "label" && result && result.labels) {
+        result.labels.forEach((label) => {
+          if (label.Instances) {
+            label.Instances.forEach((instance) => {
+              const boundingBox = instance.BoundingBox;
+              const details = {
+                name: label.Name,
+                confidence: label.Confidence.toFixed(2),
+              };
+
+              boxesToDraw.push({ boundingBox, details });
+            });
+          }
+        });
+      }
+
+      if (capturedImage) {
+        const imgEl = new Image();
+        imgEl.src = capturedImage;
+
+        imgEl.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = imgEl.width;
+          canvas.height = imgEl.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(imgEl, 0, 0);
+
+          boxesToDraw.forEach(({ boundingBox, details }) => {
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
+
+            const x = boundingBox.Left * canvas.width;
+            const y = boundingBox.Top * canvas.height;
+            const width = boundingBox.Width * canvas.width;
+            const height = boundingBox.Height * canvas.height;
+
+            ctx.strokeRect(x, y, width, height);
+
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "red";
+
+            let detailsText = details.gender
+              ? `${details.gender}, ${details.ageRange}, ${details.dominantEmotion}`
+              : `${details.name}, Confidence: ${details.confidence}%`;
+
+            ctx.fillText(detailsText, x, y - 10);
+          });
+
+          setCapturedImage(canvas.toDataURL("image/jpeg"));
+        };
       }
     } catch (err) {
       console.log(err);
@@ -159,9 +214,13 @@ function RekognitionDemo() {
             />
           )}
           <div style={{ marginTop: "10px" }}>
-            <button onClick={captureSnapshot} style={{ marginRight: "10px" }}>
+            <button
+              onClick={capturedImage ? retakeSnapshot : captureSnapshot}
+              style={{ marginRight: "10px" }}
+            >
               {capturedImage ? "Retake Snapshot" : "Take Snapshot"}
             </button>
+
             <button onClick={closeCamera}>Close Camera</button>
           </div>
         </div>
@@ -178,20 +237,6 @@ function RekognitionDemo() {
 
       {loading && <div className="loading-circle"></div>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {faceDetails && (
-        <div className="face-details">
-          <p>
-            <strong>Gender:</strong> {faceDetails.gender}
-          </p>
-          <p>
-            <strong>Emotion:</strong> {faceDetails.dominantEmotion}
-          </p>
-          <p>
-            <strong>Age Range:</strong> {faceDetails.ageRange}
-          </p>
-        </div>
-      )}
     </div>
   );
 }
