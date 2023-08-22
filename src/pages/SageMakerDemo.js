@@ -10,7 +10,7 @@ function SageMakerDemo() {
   const analyzeGenre = async (inputText) => {
     const payload = {
       action: "sagemaker",
-      endpoint_name: "blazingtext-2023-08-22-03-38-33-609",
+      endpoint_name: "blazingtext-2023-08-22-08-14-34-302",
       payload: {
         instances: [inputText],
       },
